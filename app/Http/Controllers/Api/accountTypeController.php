@@ -24,7 +24,7 @@ class accountTypeController extends Controller
         $data=$request->all();
         $accuntType = new accountType();
         if($accuntType::where("name",$data["name"])->exists()) {
-            return response()->json(["message" => "Subject already exists"]);
+            return response()->json(["message" => "Account type already exists"]);
         }else {
             $accuntType->name = $data['name'];
             $accuntType->save();
