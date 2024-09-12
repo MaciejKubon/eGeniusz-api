@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\accountTypeController;
 use App\Http\Controllers\Api\subjectController;
+use App\Http\Controllers\Api\subjectLevelController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -10,3 +11,4 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 Route::apiResource('accountTypes', AccountTypeController::class);
 Route::apiResource('subject', SubjectController::class);
+Route::apiResource("subjectLevel", SubjectLevelController::class);
