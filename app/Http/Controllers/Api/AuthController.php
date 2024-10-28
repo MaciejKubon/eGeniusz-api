@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\student;
 use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -24,8 +25,14 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'accountType'=>$request->accountType
+            'accountType'=>$request->accountType,
         ]);
+        if($request->accountType == 3)
+        {
+            $student = new student();
+            $student -> user_id = $user->id;
+            $student -> save();
+        }
 
         // Generowanie tokenu (przykład z użyciem Passport)
         $token = $user->createToken('authToken')->plainTextToken;
