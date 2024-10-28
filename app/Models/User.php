@@ -52,6 +52,10 @@ class User extends Authenticatable
     public function student(): HasOne
     {
         return $this->hasOne(student::class)->withDefault(student::empty());
-    }
 
+    }
+    public function teacher(): HasOne
+    {
+        return $this->hasOne(student::class)->withDefault(teacher::empty());
+    }
 }
