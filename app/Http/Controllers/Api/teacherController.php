@@ -8,43 +8,21 @@ use Illuminate\Http\Request;
 
 class teacherController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function showProfile(Request $request)
     {
-        //
-    }
+        $user = $request->user();
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        $user = $user -> load('teacher');
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(teacher $teacher)
-    {
-        //
+        // Zwróć dane zalogowanego użytkownika
+        return response()->json(
+            $user->teacher
+        );
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, teacher $teacher)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(teacher $teacher)
-    {
-        //
+    public function updateProfile(Request $request){
+        $user = $request->user();
+        $user = $user -> load('teacher');
+        $user -> teacher->update($request->only('firstName','lastName','description','birthday'));
+        return response()->json(['message' => 'Profil zaktualizowany pomyślnie']);
     }
 }

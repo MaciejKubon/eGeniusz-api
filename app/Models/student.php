@@ -15,6 +15,7 @@ class student extends Model
     protected $fillable = ["user_id","firstName","lastName","birthday"];
 
     protected $hidden = [
+        'user_id',
         'created_at',
         'updated_at',
     ];

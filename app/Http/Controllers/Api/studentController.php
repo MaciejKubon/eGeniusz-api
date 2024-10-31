@@ -6,45 +6,26 @@ use App\Models\student;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+
+
 class studentController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function showProfile(Request $request)
     {
-        //
+        $user = $request->user();
+
+        $user = $user -> load('student');
+
+        // Zwróć dane zalogowanego użytkownika
+        return response()->json(
+            $user->student
+        );
+    }
+    public function updateProfile(Request $request){
+        $user = $request->user();
+        $user = $user -> load('student');
+        $user -> student->update($request->only('firstName','lastName','birthday'));
+        return response()->json(['message' => 'Profil zaktualizowany pomyślnie']);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(student $student)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, student $student)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(student $student)
-    {
-        //
-    }
 }
