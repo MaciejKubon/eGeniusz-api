@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\studentController;
+use App\Http\Controllers\Api\subjectController;
 use App\Http\Controllers\Api\teacherController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -12,6 +13,7 @@ Route::middleware('auth:sanctum')->get('/studentProfile', [studentController::cl
 Route::middleware('auth:sanctum')->put('/studentProfile', [studentController::class, 'updateProfile']);
 Route::middleware('auth:sanctum')->get('/teacherProfile', [teacherController::class, 'showProfile']);
 Route::middleware('auth:sanctum')->put('/teacherProfile', [teacherController::class, 'updateProfile']);
+Route::apiResource('subject', SubjectController::class);
 
 //Route::get('/studentProfile', [studentController::class, 'userProfile']);
 
