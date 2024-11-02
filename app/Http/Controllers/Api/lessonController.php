@@ -51,7 +51,29 @@ class lessonController extends Controller
     public function deleteLesson(Request $request, lesson $lesson){
         $lesson->delete();
     }
-
+    public function getTeachersLesson(Request $request)
+    {
+        $teacher = teacher::all();
+        $teachers =[];
+        foreach($teacher as $teacher){
+            $lesson = $teacher->lesson;
+            $lesson = $lesson->load('subject');
+            $sub= [];
+            $price=[];
+            foreach($lesson as $lessons){
+                $sub[]= $lessons->subject['name'] ;
+                $price[]= $lessons->price;
+            }
+            $tech = ['id' => $teacher['id'],
+                'firstName' => $teacher['firstName'],
+                'lastName' => $teacher['lastName'],
+                'subjects' => $sub,
+                'price'=>$price
+            ];
+            $teachers[] = $tech;
+        }
+        return response()->json($teachers);
+    }
 
 
 
