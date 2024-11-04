@@ -21,7 +21,7 @@ Route::middleware('auth:sanctum')->get('/TeacherLesson',[lessonController::class
 Route::middleware('auth:sanctum')->post('/TeacherLesson',[lessonController::class,'addLesson']);
 Route::middleware('auth:sanctum')->put('/TeacherLesson/{lesson}',[lessonController::class,'editLesson']);
 Route::middleware('auth:sanctum')->delete('/TeacherLesson/{lesson}',[lessonController::class,'deleteLesson']);
-Route::get('/Teachers',[lessonController::class,'getTeachersLesson']);
+Route::post('/Teachers',[lessonController::class,'getTeachersLesson']);
 //Route::get('/studentProfile', [studentController::class, 'userProfile']);
 
 //Route::get('/user', function (Request $request) {

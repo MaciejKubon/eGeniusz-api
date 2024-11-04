@@ -53,24 +53,60 @@ class lessonController extends Controller
     }
     public function getTeachersLesson(Request $request)
     {
+        $filtrSubject = $request['subjects_id'];
+        $filerLevel = $request['levels_id'];
+        $filterPriceMin = $request['minPrice'];
+        $filterPriceMax = $request['maxPrice'];
         $teacher = teacher::all();
         $teachers =[];
-        foreach($teacher as $teacher){
-            $lesson = $teacher->lesson;
-            $lesson = $lesson->load('subject');
+        foreach($teacher as $teach){
+            $lesson = $teach->lesson;
             $sub= [];
+            $subId=[];
+            $levId=[];
             $price=[];
             foreach($lesson as $lessons){
                 $sub[]= $lessons->subject['name'] ;
+                $subId[]= $lessons->subject_id;
+                $levId[]=$lessons->subject_level_id;
                 $price[]= $lessons->price;
             }
-            $tech = ['id' => $teacher['id'],
-                'firstName' => $teacher['firstName'],
-                'lastName' => $teacher['lastName'],
+            $tech = ['id' => $teach['id'],
+                'firstName' => $teach['firstName'],
+                'lastName' => $teach['lastName'],
                 'subjects' => $sub,
-                'price'=>$price
+                'price'=>$price,
             ];
-            $teachers[] = $tech;
+            if(count(array_intersect($filtrSubject, $subId))>0 || count($filtrSubject)==0)
+            {
+                if(count(array_intersect($filerLevel, $levId))>0 || count($filerLevel)==0)
+                {
+                    if(count($price)>0)
+                    {
+                        $isBetween = false;
+                        foreach($price as $prices){
+                            if($prices>=$filterPriceMin && $prices<=$filterPriceMax)
+                            {
+                                $isBetween = true;
+                            }
+                        }
+                        if($isBetween){
+                            $teachers[] = $tech;
+                        }
+                    }
+
+                    else{
+                        $teachers[] = $tech;
+                    }
+
+
+
+                }
+
+            }
+
+
+
         }
         return response()->json($teachers);
     }
