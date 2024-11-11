@@ -13,7 +13,7 @@ class lessonController extends Controller
 
     public function addLesson(Request $request){
 
-        if($request->prce<0){
+        if($request->price<0){
             return response()->json(['message' => 'Cena mniejsza niż zero'], 400);
         }
         $lessonList = $this->showTeacher($request);

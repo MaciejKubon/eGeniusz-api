@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\studentController;
 use App\Http\Controllers\Api\subjectController;
 use App\Http\Controllers\Api\subjectLevelController;
 use App\Http\Controllers\Api\teacherController;
+use App\Http\Controllers\Api\termsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +23,10 @@ Route::middleware('auth:sanctum')->post('/TeacherLesson',[lessonController::clas
 Route::middleware('auth:sanctum')->put('/TeacherLesson/{lesson}',[lessonController::class,'editLesson']);
 Route::middleware('auth:sanctum')->delete('/TeacherLesson/{lesson}',[lessonController::class,'deleteLesson']);
 Route::post('/Teachers',[lessonController::class,'getTeachersLesson']);
+Route::get('TeacherTerms/{teacher}', [termsController::class, 'showTeacherTerms']);
+Route::middleware('auth:sanctum')->post('/TeacherTerms', [termsController::class, 'addTeacherTerms']);
+Route::middleware('auth:sanctum')->post('/TeacherTermsGet', [termsController::class, 'getTeacherTerms']);
+Route::middleware('auth:sanctum')->delete('/TeacherTerms/{terms}',[termsController::class,'deleteTeacherTerm']);
 //Route::get('/studentProfile', [studentController::class, 'userProfile']);
 
 //Route::get('/user', function (Request $request) {
