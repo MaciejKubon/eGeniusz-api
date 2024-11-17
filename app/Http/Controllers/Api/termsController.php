@@ -49,7 +49,35 @@ class termsController extends Controller
         $terms = $teacher->terms()->get();
         return response()->json($terms);
     }
-
+    public function getTeacherDeatilsTerms(request $request){
+        $startDate = $request['start_date'];
+        $endDate = $request['end_date'];
+        $idTeacher = $request['teacher_id'];
+        $teacher = teacher::find($idTeacher);
+        $terms = $teacher->terms()->get();
+        $sDate = new \DateTime($startDate);
+        $eDate= new \DateTime($endDate);
+        $secDate =new \DateTime($startDate);
+        $termsTAB=[];
+        while($sDate<=$eDate){
+            $secDate = $secDate->modify('+1 day');
+            $termsDATA = $terms->where('start_date', '>=', $sDate->format('Y-m-d H:i:s'))->where('start_date', '<=', $secDate->format('Y-m-d H:i:s'));
+            $termTab = [];
+            foreach ($termsDATA as $term) {
+                $termTab[] = [
+                    'start_date' =>$term->start_date,
+                    'end_date' =>$term->end_date,
+                    'id' =>$term->id,
+                ];
+            }
+            $termsTAB[] =[
+                'dayTime' => $sDate->format('Y-m-d'),
+                'terms' => $termTab,
+            ];
+            $sDate->modify('+1 day');
+        }
+        return response()->json($termsTAB);
+    }
     public function getTeacherTerms(request $request){
         $startDate = $request['start_date'];
         $endDate = $request['end_date'];

@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->post('/TeacherTerms', [termsController::class
 Route::middleware('auth:sanctum')->post('/TeacherTermsGet', [termsController::class, 'getTeacherTerms']);
 Route::middleware('auth:sanctum')->delete('/TeacherTerms/{terms}',[termsController::class,'deleteTeacherTerm']);
 Route::post('/TeacherDetail',[teacherDetailController::class,'getTeacherDetail']);
+Route::post('/TeacharDetialTerms',[termsController::class,'getTeacherDeatilsTerms']);
 //Route::get('/studentProfile', [studentController::class, 'userProfile']);
 
 //Route::get('/user', function (Request $request) {
