@@ -29,6 +29,8 @@ class teacher extends Model
             'description' => '',
         ];
     }
+
+
     public function lesson(): hasMany
     {
         return $this->hasMany(lesson::class);

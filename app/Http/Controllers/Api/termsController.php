@@ -64,10 +64,12 @@ class termsController extends Controller
             $termsDATA = $terms->where('start_date', '>=', $sDate->format('Y-m-d H:i:s'))->where('start_date', '<=', $secDate->format('Y-m-d H:i:s'));
             $termTab = [];
             foreach ($termsDATA as $term) {
+                if($term->classes == null)
                 $termTab[] = [
                     'start_date' =>$term->start_date,
                     'end_date' =>$term->end_date,
                     'id' =>$term->id,
+                    'classes'=>$term->classes,
                 ];
             }
             $termsTAB[] =[
@@ -96,6 +98,7 @@ class termsController extends Controller
                     'start_date' =>$term->start_date,
                     'end_date' =>$term->end_date,
                     'id' =>$term->id,
+                    'classes'=>$term->classes,
                 ];
             }
             $termsTAB[] =[

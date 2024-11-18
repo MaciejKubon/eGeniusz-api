@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class student extends Model
 {
@@ -27,5 +28,10 @@ class student extends Model
             'lastName' => '',
             'birthday' => '',
         ];
+    }
+
+    public function classes(): HasMany
+    {
+        return $this->hasMany(classes::class);
     }
 }
