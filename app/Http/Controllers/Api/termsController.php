@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\lesson;
+use App\Models\student;
 use App\Models\teacher;
 use App\Models\terms;
 use App\Http\Controllers\Controller;
@@ -53,6 +54,8 @@ class termsController extends Controller
         $startDate = $request['start_date'];
         $endDate = $request['end_date'];
         $idTeacher = $request['teacher_id'];
+        $student = student::find($this->getStudentId($request)); //
+        $Studentclasses = $student->load('classes')->classes;
         $teacher = teacher::find($idTeacher);
         $terms = $teacher->terms()->get();
         $sDate = new \DateTime($startDate);
@@ -72,9 +75,34 @@ class termsController extends Controller
                     'classes'=>$term->classes,
                 ];
             }
+            //
+            $classesArr= [];
+
+
+            foreach ($Studentclasses as $class){
+                $add = false;
+                $term = $class->terms()->get();
+                foreach ($term as $t){
+                    $sD = new \DateTime($t->start_date);
+                    if($sD->format('Y-m-d')==$sDate->format('Y-m-d')){
+                        $add = true;
+                    }
+                }
+                if($add==true)
+                {
+                    $classesArr[] =[
+                        'id' => $class->id,
+                        'confirmed' => $class->confirmed,
+                        'lesson'=>$this->getLesson($class->lesson_id),
+                        'term'=>$this->getTerm($class->terms_id),
+                    ];
+                }
+            }
+            //
             $termsTAB[] =[
                 'dayTime' => $sDate->format('Y-m-d'),
                 'terms' => $termTab,
+                'classes' => $classesArr,
             ];
             $sDate->modify('+1 day');
         }
@@ -122,6 +150,35 @@ class termsController extends Controller
         $user = $user->load('teacher');
         $user = $user->teacher;
         return $user['id'];
+    }
+    private function getStudentId(Request $request){
+        $user = $request->user();
+        $user = $user->load('student');
+        $user = $user->student;
+        return $user['id'];
+    }
+    private function getLesson($id){
+        $lesson = lesson::find($id);
+        $lesson = $lesson->load('subject','subjectLevel');
+        $subject = $lesson->subject;
+        $level = $lesson->subjectLevel;
+
+        return ([
+            'id'=> $lesson->id,
+            'subject' => $subject,
+            'subjcet_level' => $level,
+            'price' => $lesson->price,
+        ]);
+    }
+
+    private function getTerm($id){
+        $term = terms::find($id);
+        return ([
+            'id' => $term->id,
+            'teacher_id' => $term->teacher_id,
+            'start_date' => $term->start_date,
+            'end_date' => $term->end_date,
+        ]);
     }
 
 }
