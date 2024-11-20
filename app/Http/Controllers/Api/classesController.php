@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\classes;
 use App\Http\Controllers\Controller;
 use App\Models\lesson;
+use App\Models\teacher;
 use App\Models\terms;
 use Illuminate\Http\Request;
 use App\Models\student;
@@ -22,6 +23,28 @@ class classesController extends Controller
             'lesson_id' => $lessonID,
             'confirmed' => false,
         ]);
+        return response()->json($classes);
+    }
+    public function deleteClasses(Classes $classes){
+        $classes->delete();
+        return response()->json($classes);
+    }
+
+    public function getClasses(Classes $classes){
+
+        $term = terms::find($classes->terms_id);
+        $lesson = $this->getLesson($classes->lesson_id);
+        $student = $this->getStudent($classes->student_id);
+        return response()->json([
+            'id'=>$classes->id,
+            'confirmed'=>$classes->confirmed,
+            'terms'=>$term,
+            'lesson'=>$lesson,
+            'student'=>$student,
+        ]);
+    }
+    public function confirmClasses(Request $request,Classes $classes){
+        $classes ->update(['confirmed'=>$request->confirmed]);
         return response()->json($classes);
     }
     public function getStudentClasses(Request $request){
@@ -61,6 +84,15 @@ class classesController extends Controller
         $user = $user->load('student');
         $user = $user->student;
         return $user['id'];
+    }
+    private function getStudent($id)
+    {
+        $student = student::find($id);
+        return ([
+            'id' => $student->id,
+            'firstName' => $student->firstName,
+            'lastName' => $student->lastName,
+        ]);
     }
     private function getLesson($id){
         $lesson = lesson::find($id);

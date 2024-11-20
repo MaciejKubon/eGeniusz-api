@@ -151,6 +151,16 @@ class termsController extends Controller
         $user = $user->teacher;
         return $user['id'];
     }
+
+    private function getTeacher($id)
+    {
+        $teacher = teacher::find($id);
+        return ([
+            'id' => $teacher->id,
+            'firstName' => $teacher->firstName,
+            'lastName' => $teacher->lastName,
+        ]);
+    }
     private function getStudentId(Request $request){
         $user = $request->user();
         $user = $user->load('student');
@@ -178,6 +188,7 @@ class termsController extends Controller
             'teacher_id' => $term->teacher_id,
             'start_date' => $term->start_date,
             'end_date' => $term->end_date,
+            'teacher' => $this->getTeacher($term->teacher_id),
         ]);
     }
 
