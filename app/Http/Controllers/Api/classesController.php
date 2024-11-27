@@ -49,33 +49,77 @@ class classesController extends Controller
     }
     public function getStudentClasses(Request $request){
         $startDate = $request['start_date'];
-        $studentID = $this->getStudentId($request);
-        $student = student::find($studentID);
-        $classes = $student->classes()->get();
+        $endDate = $request['end_date'];
+        $confirmed = $request['confirmed'];
+        $student = student::find($this->getStudentId($request));
+        $Studentclasses = $student->load('classes')->classes;
         $sDate = new \DateTime($startDate);
+        $eDate= new \DateTime($endDate);
+        $secDate =new \DateTime($startDate);
         $classesArr= [];
-        foreach ($classes as $class){
-            $add = false;
-            $term = $class->terms()->get();
-            foreach ($term as $t){
-                $sD = new \DateTime($t->start_date);
-                if($sD->format('Y-m-d')==$sDate->format('Y-m-d')){
-                    $add = true;
+        while($sDate<=$eDate) {
+            $secDate = $secDate->modify('+1 day');
+            foreach ($Studentclasses as $class){
+                if($confirmed == $class->confirmed)
+                {
+                    $add = false;
+                    $term = $class->terms()->get();
+                    foreach ($term as $t){
+                        $sD = new \DateTime($t->start_date);
+                        if($sD->format('Y-m-d')==$sDate->format('Y-m-d')){
+                            $add = true;
+                        }
+                    }
+                    if($add==true)
+                    {
+                        $classesArr[] =[
+                            'id' => $class->id,
+                            'date' => $sDate->format('Y-m-d'),
+                            'confirmed' => $class->confirmed,
+                            'lesson'=>$this->getLesson($class->lesson_id),
+                            'term'=>$this->getTerm($class->terms_id),
+                        ];
+                    }
                 }
+
             }
-            if($add==true)
-            {
-                $classesArr[] =[
-                    'id' => $class->id,
-                    'confirmed' => $class->confirmed,
-                    'lesson'=>$this->getLesson($class->lesson_id),
-                    'term'=>$this->getTerm($class->terms_id),
-                ];
+            $sDate->modify('+1 day');
+        }
+        return response()->json($classesArr);
+    }
+    public function getTeacherClasses(Request $request){
+        $startDate = $request['start_date'];
+        $endDate = $request['end_date'];
+        $confirmed = $request['confirmed'];
+        $teacher = teacher::find($this->getTeacherId($request));
+        $teacherTerms = $teacher->load('terms')->terms;
+        $teacherClasses = $teacherTerms->load('classes');
+        $sDate = new \DateTime($startDate);
+        $eDate= new \DateTime($endDate);
+        $classesArr= [];
+        foreach ($teacherClasses as $class){
+            if($sDate<= new \DateTime($class->start_date)
+                && $eDate>= new \DateTime($class->end_date)
+                && $class->classes != null){
+                $techClass = $class->load('classes')->classes;
+                if($techClass->confirmed==$confirmed){
+                    $classesArr[] = [
+                        'id' => $class->id,
+                        'start_date' => $class->start_date,
+                        'end_date' => $class->end_date,
+                        'classes' => [
+                            'id' => $class->classes->id,
+                            'student'=> $this->getStudent($techClass->student_id),
+                            'lesson'=>$this->getLesson($techClass->lesson_id),
+                            'confirmed' => $techClass->confirmed,
+                        ],
+
+                    ];
+                }
             }
         }
         return response()->json($classesArr);
     }
-
 
 
 
@@ -94,6 +138,14 @@ class classesController extends Controller
             'lastName' => $student->lastName,
         ]);
     }
+    public function getTeacher($id){
+        $teacher = teacher::find($id);
+        return ([
+            'id' => $teacher->id,
+            'firstName' => $teacher->firstName,
+            'lastName' => $teacher->lastName,
+        ]);
+    }
     private function getLesson($id){
         $lesson = lesson::find($id);
         $lesson = $lesson->load('subject','subjectLevel');
@@ -103,7 +155,7 @@ class classesController extends Controller
         return ([
             'id'=> $lesson->id,
             'subject' => $subject,
-            'subjcet_level' => $level,
+            'subject_level' => $level,
             'price' => $lesson->price,
         ]);
     }
@@ -112,9 +164,15 @@ class classesController extends Controller
         $term = terms::find($id);
         return ([
             'id' => $term->id,
-            'teacher_id' => $term->teacher_id,
+            'teacher' => $this->getTeacher($term->teacher_id),
             'start_date' => $term->start_date,
             'end_date' => $term->end_date,
         ]);
+    }
+    private function getTeacherId(Request $request){
+        $user = $request->user();
+        $user = $user->load('teacher');
+        $user = $user->teacher;
+        return $user['id'];
     }
 }

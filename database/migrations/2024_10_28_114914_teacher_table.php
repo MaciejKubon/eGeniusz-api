@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignID('user_id')->constrained('users');
             $table->string('firstName',64)->nullable();
             $table->string('lastName', 64)->nullable();
-            $table->string('description')->nullable();
+            $table->string('description',500)->nullable();
             $table->date('birthday')->nullable();
             $table->timestamps();
         });
