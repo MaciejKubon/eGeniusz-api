@@ -31,9 +31,11 @@ Route::middleware('auth:sanctum')->post('/TeacherTermsGet', [termsController::cl
 Route::middleware('auth:sanctum')->delete('/TeacherTerms/{terms}',[termsController::class,'deleteTeacherTerm']);
 Route::post('/TeacherDetail',[teacherDetailController::class,'getTeacherDetail']);
 Route::middleware('auth:sanctum')->post('/TeacharDetialTerms',[termsController::class,'getTeacherDeatilsTerms']);
+Route::middleware('auth:sanctum')->post('/StudentClassesGet',[termsController::class,'getStudentClasses']);
 //Route::get('/studentProfile', [studentController::class, 'userProfile']);
 Route::middleware('auth:sanctum')->post('/Classes',[classesController::class,'setNewFunction']);
 Route::middleware('auth:sanctum')->post('/StudentClasses',[classesController::class,'getStudentClasses']);
+Route::middleware('auth:sanctum')->post('/TeacherClasses',[classesController::class,'getTeacherClasses']);
 Route::middleware('auth:sanctum')->delete('/StudentClasses/{classes}',[classesController::class,'deleteClasses']);
 Route::middleware('auth:sanctum')->get('/Classes/{classes}',[classesController::class,'getClasses']);
 Route::middleware('auth:sanctum')->put('/Classes/{classes}',[classesController::class,'confirmClasses']);

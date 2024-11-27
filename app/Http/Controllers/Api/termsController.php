@@ -108,6 +108,51 @@ class termsController extends Controller
         }
         return response()->json($termsTAB);
     }
+    public function getStudentClasses(request $request){
+        $startDate = $request['start_date'];
+        $endDate = $request['end_date'];
+        $sDate = new \DateTime($startDate);
+        $eDate= new \DateTime($endDate);
+        $secDate =new \DateTime($startDate);
+        $student = student::find($this->getStudentId($request));
+        $studentclasses = $student->load('classes')->classes;
+        $termsArr =[];
+        foreach ($studentclasses as $class){
+            $term = $class->load('terms')->terms;
+            $classDate = new \DateTime($term->start_date);
+            if($sDate<= $classDate
+                && $eDate>= $classDate){
+            $termsArr [] = [
+                'classDate'=> $classDate->format('Y-m-d'),
+                "classes"=>[
+                "start_date" =>$term->start_date,
+                "end_date" =>$term->end_date,
+                "teacher"=>$this->getTeacher($term->teacher_id),
+                "lesson"=>$this->getLesson($class->lesson_id),
+                "confirmed"=>$class->confirmed]
+            ];
+            }
+        }
+        $terms =[];
+        while($sDate<=$eDate){
+            $secDate = $secDate->modify('+1 day');
+            $term =[];
+            foreach ($termsArr as $t){
+                if($t['classDate']==$sDate->format('Y-m-d')){
+                   $term[] =$t;
+                }
+            }
+            $terms[]=[
+                'classDate'=>$sDate->format('Y-m-d'),
+                'classes'=>$term,
+            ];
+            $sDate->modify('+1 day');
+        }
+
+
+
+        return response()->json($terms);
+    }
     public function getTeacherTerms(request $request){
         $startDate = $request['start_date'];
         $endDate = $request['end_date'];
@@ -176,7 +221,7 @@ class termsController extends Controller
         return ([
             'id'=> $lesson->id,
             'subject' => $subject,
-            'subjcet_level' => $level,
+            'subject_level' => $level,
             'price' => $lesson->price,
         ]);
     }
