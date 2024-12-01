@@ -13,7 +13,7 @@ class student extends Model
     public $table = 'student';
 
 
-    protected $fillable = ["user_id","firstName","lastName","birthday"];
+    protected $fillable = ["user_id","firstName","lastName","birthday","imgPath"];
 
     protected $hidden = [
         'user_id',
@@ -27,6 +27,7 @@ class student extends Model
             'firstName' => '',
             'lastName' => '',
             'birthday' => '',
+            'imgPath'=>'',
         ];
     }
 

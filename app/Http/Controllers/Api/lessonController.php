@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\subjectLevel;
 use App\Models\teacher;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class lessonController extends Controller
 {
@@ -74,6 +75,7 @@ class lessonController extends Controller
             $tech = ['id' => $teach['id'],
                 'firstName' => $teach['firstName'],
                 'lastName' => $teach['lastName'],
+                'imageLink'=> Storage::url($teach['imgPath']),
                 'subjects' => $sub,
                 'price'=>$price,
             ];
