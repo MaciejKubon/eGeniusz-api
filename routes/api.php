@@ -42,3 +42,7 @@ Route::middleware('auth:sanctum')->put('/Classes/{classes}',[classesController::
 //Route::get('/user', function (Request $request) {
 //    return $request->user();
 //})->middleware('auth:sanctum');
+Route::middleware('auth:sanctum')->post('/teacherProfile/image',[teacherController::class,'setTeacherImage']);
+Route::middleware('auth:sanctum')->get('/teacherProfile/image',[teacherController::class,'getTeacherImage']);
+Route::middleware('auth:sanctum')->post('/studentProfile/image',[studentController::class,'setStudentImage']);
+Route::middleware('auth:sanctum')->get('/studentProfile/image',[studentController::class,'getStudentImage']);

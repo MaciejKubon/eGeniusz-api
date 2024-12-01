@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('lastName', 64)->nullable();
             $table->string('description',500)->nullable();
             $table->date('birthday')->nullable();
+            $table->string('imgPath')->nullable();
             $table->timestamps();
         });
     }
